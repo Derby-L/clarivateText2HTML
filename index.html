@@ -14,7 +14,7 @@
     <div id="header">
         <button id="pesudo" class="pmt"><input type="file" id="file-uploader">select file</button>
         <button id="uploader-button">upload</button>
-        <button id="transform">transform</button>
+        <button id="transform" class="pmt">transform</button>
         <button id="download">download</button>
     </div>
     <div id="HTML-container">
@@ -43,27 +43,28 @@
             ele.onload = html2file(ele);
         });
 
-
         function flieLoad() {
             files = upload.files;
+            document.querySelector("#text")?.remove();
             reader.readAsText(files[0], "utf-8");
             pesudoElement.innerText ="select file"
             pesudoElement.setAttribute("class", "pmt");
+            transform.setAttribute("class", "pmt");
             reader.onprogress = (evt) => {
                 if (evt.loaded == files[0].size) {
                     loaded = true;
-                    pesudoElement.innerText = "file loaded"
-                    pesudoElement.setAttribute("class", "tmp");
+                    pesudoElement.innerText = "file loaded";
+                    setLoadedFlag(pesudoElement);
                 }
             }
         }
         function render2hmtl(reader) {
-            document.querySelector("#text")?.remove();
             if (loaded == true) {
-                const div = document.createElement("p");
-                div.setAttribute("id", "text");
-                div.innerHTML = reader.result;
-                HTMLConatiner.appendChild(div);
+                const p = document.createElement("p");
+                p.setAttribute("id", "text");
+                p.innerHTML = reader.result;
+                HTMLConatiner.appendChild(p);
+                p.onload = setLoadedFlag(transform);
             }
         }
         function html2file(element) {
@@ -75,7 +76,9 @@
             aLink.click();
             aLink.remove();
         }
-
+        function setLoadedFlag(element) {
+            element.setAttribute("class", "tmp");
+        }
     </script>
 </body>
 

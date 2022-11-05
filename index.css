@@ -52,4 +52,5 @@ input[type="file"]{
 
 p {
     padding: 1em 0.2em;
+    overflow: hidden;
 }
