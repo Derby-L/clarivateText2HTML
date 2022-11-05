@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClarivateDownloadedText2html</title>
+    <link rel="stylesheet" href="./index.css">
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+    <div id="header">
+        <button id="pesudo" class="pmt"><input type="file" id="file-uploader">select file</button>
+        <button id="uploader-button">upload</button>
+        <button id="transform">transform</button>
+        <button id="download">download</button>
+    </div>
+    <div id="HTML-container">
+    </div>
+
+    <script>
+        const upload = document.querySelector("#file-uploader");
+        const uploaderButton = document.querySelector("#uploader-button");
+        const transform = document.querySelector("#transform");
+        const HTMLConatiner = document.querySelector("#HTML-container");
+        const downloader = document.querySelector("#download");
+        const pesudoElement = document.querySelector("#pesudo");
+
+        let loaded = false;
+        let reader = new FileReader();
+
+        pesudoElement.onclick = ()=> upload.click();
+        uploaderButton.addEventListener("click", () => {
+            flieLoad();
+        })
+        transform.addEventListener("click", () => {
+            render2hmtl(reader);
+        })
+        downloader.addEventListener("click", () => {
+            let ele = document.querySelector("#text");
+            ele.onload = html2file(ele);
+        });
+
+
+        function flieLoad() {
+            files = upload.files;
+            reader.readAsText(files[0], "utf-8");
+            pesudoElement.innerText ="select file"
+            pesudoElement.setAttribute("class", "pmt");
+            reader.onprogress = (evt) => {
+                if (evt.loaded == files[0].size) {
+                    loaded = true;
+                    pesudoElement.innerText = "file loaded"
+                    pesudoElement.setAttribute("class", "tmp");
+                }
+            }
+        }
+        function render2hmtl(reader) {
+            document.querySelector("#text")?.remove();
+            if (loaded == true) {
+                const div = document.createElement("p");
+                div.setAttribute("id", "text");
+                div.innerHTML = reader.result;
+                HTMLConatiner.appendChild(div);
+            }
+        }
+        function html2file(element) {
+            let toBeDownload = new Blob([element.innerHTML], { type: "text/plain" });
+            const aLink = document.createElement("a");
+            const dataURL = URL.createObjectURL(toBeDownload)
+            aLink.setAttribute("href", dataURL);
+            aLink.setAttribute("download", "exported.txt");
+            aLink.click();
+            aLink.remove();
+        }
+
+    </script>
+</body>
+
+</html>
